@@ -1,0 +1,54 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-group{
+    margin-bottom: 10px;
+}
+
+.dataTables_filter {
+    margin-bottom: 15px;
+}
+
+tbody, td, tfoot, th, thead, tr {
+    border-color: rgba(0, 0, 0, 0.11) !important;
+    border-style: none;
+}
+
+thead {
+    background-color: #ebfaff;
+}
+
+table.dataTable thead th{
+    font-weight:normal;
+}
+
+.table {
+    border: 1px solid rgba(0, 0, 0, 0.11) !important;
+    border-radius: 5px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: .1em .5em;
+}
+
+label {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
