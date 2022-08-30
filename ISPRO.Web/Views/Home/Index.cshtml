@@ -2,7 +2,84 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@section Styles {
+<style>
+    body {
+        background-image: url("img/main.jpg");
+        object-fit: cover;
+        display: block;
+        vertical-align: middle;
+        background-size: cover;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+    }
+
+    .navbar {
+        background-color: #0000008c !important;
+        border-bottom: none !important;
+    }
+
+    .border-top {
+        background-color: #0000008c !important;
+        border-top: none !important;
+    }
+
+    .navbar-light .navbar-brand {
+        color: #00c3ff;
+    }
+
+        .navbar-light .navbar-brand:hover {
+            color: #a6eaff;
+        }
+
+    .nav-link {
+        color: #ffffffed !important;
+    }
+
+        .nav-link:hover {
+            color: #9ae3ffed !important;
+        }
+
+    .footer-item {
+        color: #93cbfd;
+    }
+
+    .navbar-toggler {
+        color: white !important;
+    }
+
+    /*        @@media only screen and (width : 1024px) and (orientation : landscape) {
+                .display-4 {
+                    font-size: 4rem !important;
+                    max-width: 60%;
+                }
+            }*/
+</style>
+}
+
+<div class="row" style="margin: 20vh auto 0;">
+    <div style="margin-bottom:10px" class="text-center col-md-6 col-sm-12">
+        <h1 class="display-4" style="color: #ffffff !important;font-weight: 400;text-shadow: 2px 2px 8px rgba(0,0,0,0.4);font-size: 3rem;">Join ISPRO enterprise system management solution for local internet service providers</h1>
+        <a class="btn btn-primary" style="margin-top: 50px;">Join Now</a>
+    </div>
+
+    <div class="col-md-2 col-sm-12">
+    </div>
+
+    <div style="margin-bottom:10px;margin-top: 50px;" class="text-center col-md-3 col-sm-12">
+        <div class="display-4">
+            <div style="padding: 10px;background: #f0f8ffc9;border-radius: 6px;">
+                <h5 style="text-align: initial;margin-bottom: 40px;">Already a user?</h5>
+                <div class="form-group">
+                    <input class="form-control" type="text" data-val="true" data-val-maxlength="The field Username must be a string or array type with a maximum length of '50'." data-val-maxlength-max="50" data-val-required="The Username field is required." id="Username" maxlength="50" name="Username" placeholder="Username">
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Username" data-valmsg-replace="true"></span>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" data-val="true" data-val-maxlength="The field Username must be a string or array type with a maximum length of '50'." data-val-maxlength-max="50" data-val-required="The Username field is required." id="Username" maxlength="50" name="Username" placeholder="password" type="password">
+                    <span class="text-danger field-validation-valid" data-valmsg-for="Username" data-valmsg-replace="true"></span>
+                </div>
+                <a style="width: 100%;" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </div>
 </div>
