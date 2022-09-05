@@ -78,7 +78,7 @@ namespace ISPRO.Web.Controllers
             }
             catch (ModelException ex)
             {
-                ModelState.AddModelError(ex.Key, ex.Message);
+                ModelState.AddModelError("ModelError", ex.Message);
             }
             return View(managerAccount);
         }
@@ -119,9 +119,11 @@ namespace ISPRO.Web.Controllers
             {
                 try
                 {
+
                     _context.Entry(_context.ManagerAccounts.Where(x => x.Username.Equals(id)).FirstOrDefault()).State = EntityState.Detached;
                     _context.Update(managerAccount);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -136,9 +138,8 @@ namespace ISPRO.Web.Controllers
                 }
                 catch (ModelException ex)
                 {
-                    ModelState.AddModelError(ex.Key, ex.Message);
+                    ModelState.AddModelError("ModelError", ex.Message);
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(managerAccount);
         }

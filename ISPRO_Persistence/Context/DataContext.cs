@@ -16,10 +16,6 @@ namespace ISPRO.Persistence.Context
 {
     public class DataContext : DbContext, IDisposable
     {
-        //public static string ConnectionString { get; set; } = "Server=tcp:ispro-dbserver.database.windows.net,1433;Initial Catalog=ISPRO-DB;Persist Security Info=False;User ID=superuser;Password=Warning@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-        //public delegate string StringAction();
-        public static string ApplicationDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName;
-
         public DbSet<AdminAccount> AdminAccounts { get; set; }
         public DbSet<ManagerAccount> ManagerAccounts { get; set; }
         public DbSet<UserAccount> UserAccounts { get; set; }
@@ -28,14 +24,20 @@ namespace ISPRO.Persistence.Context
         public DbSet<PrePaidCard> PrePaidCards { get; set; }
         public DbSet<CashPayment> CashPayments { get; set; }
 
-        // Required for the client api
+        public DataContext() : base()
+        {
+            Console.WriteLine("Starting migration...");
+        }
+
         public DataContext(DbContextOptions options) : base(options)
         {
             Console.WriteLine("Starting migration...");
-            //Database.EnsureCreated();
-            //Database.Migrate();
-            //Database.OpenConnection();
-            //EnsureBaseConfigExist();
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server=tcp:ispro-dbserver.database.windows.net,1433;Initial Catalog=ISPRO-DB;Persist Security Info=False;User ID=superuser;Password=Warning@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -126,6 +128,7 @@ namespace ISPRO.Persistence.Context
             }
             Validate(entity);
             ((BaseEntity)(object)entity).CreationDate = DateTime.Now;
+            ((BaseEntity)(object)entity).LastUpdate = DateTime.Now;
             return base.Add(entity);
         }
 

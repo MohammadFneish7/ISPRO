@@ -7,5 +7,10 @@
         {
             Key = key;
         }
+        public ModelException(string message) : base(message)
+        {
+            Key = "ModelError";
+        }
+
     }
 }

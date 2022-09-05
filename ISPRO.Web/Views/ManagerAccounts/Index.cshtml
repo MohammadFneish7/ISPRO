@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ISPRO.Persistence.Entities.ManagerAccount>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Managers";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -45,7 +45,6 @@
         <tr>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Username">@item.Username</a>
-                @*@Html.DisplayFor(modelItem => item.Username)*@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserType)
