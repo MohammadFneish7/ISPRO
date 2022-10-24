@@ -12,6 +12,7 @@ namespace ISPRO.Persistence.Entities
     public class UserAccount : AbstractUser
     {
         [ForeignKey("Project")]
+        [Display(Name = "Project Name")]
         public string ProjectName { get; set; }
 
         [Required]
@@ -26,9 +27,13 @@ namespace ISPRO.Persistence.Entities
         public override UserType UserType { get => UserType.USER_ACCOUNT; set => base.UserType = UserType.USER_ACCOUNT; }
 
         [Required]
-        [Display(Name = "Resume Date")]
+        [Display(Name = "Valid Until")]
         [DataType(DataType.DateTime)]
-        public virtual DateTime? ResumeDate { get; set; } = DateTime.Now;
+        public virtual DateTime? ValidityDate { get; set; } = DateTime.Now;
+
+        [NotMapped]
+        [Display(Name = "Is Valid")]
+        public bool IsValid { get => ValidityDate.HasValue && ValidityDate.Value >= DateTime.Now; }
 
         [Display(Name = "Pre-Paid Cards")]
         public List<PrePaidCard> PrePaidCards { get; set; } = new List<PrePaidCard>();

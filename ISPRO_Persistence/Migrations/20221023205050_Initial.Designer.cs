@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ISPRO.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220830163109_Create_Database")]
-    partial class Create_Database
+    [Migration("20221023205050_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.8")
+                .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -76,8 +76,8 @@ namespace ISPRO.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("Ammount")
-                        .HasColumnType("int");
+                    b.Property<double>("Ammount")
+                        .HasColumnType("float");
 
                     b.Property<DateTime?>("CreationDate")
                         .HasColumnType("datetime2");
@@ -88,20 +88,19 @@ namespace ISPRO.Persistence.Migrations
                     b.Property<DateTime?>("LastUpdate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("PaymentDate")
-                        .IsRequired()
+                    b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan>("RechargePeriod")
-                        .HasColumnType("time");
+                    b.Property<int>("RechargePeriod")
+                        .HasColumnType("int");
 
-                    b.Property<string>("UserAccountId")
+                    b.Property<string>("UserAccountName")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserAccountId");
+                    b.HasIndex("UserAccountName");
 
                     b.ToTable("CashPayments");
                 });
@@ -133,6 +132,9 @@ namespace ISPRO.Persistence.Migrations
                     b.Property<DateTime?>("LastUpdate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("MaxAllowedProjects")
+                        .HasColumnType("int");
+
                     b.Property<string>("Mobile")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -152,13 +154,10 @@ namespace ISPRO.Persistence.Migrations
 
             modelBuilder.Entity("ISPRO.Persistence.Entities.PrePaidCard", b =>
                 {
-                    b.Property<long>("Code")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Code"), 1L, 1);
-
-                    b.Property<string>("ConsumerId")
+                    b.Property<string>("ConsumerName")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
@@ -180,18 +179,18 @@ namespace ISPRO.Persistence.Migrations
                     b.Property<DateTime?>("LastUpdate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
-                    b.Property<TimeSpan>("RechargePeriod")
-                        .HasColumnType("time");
+                    b.Property<int>("RechargePeriod")
+                        .HasColumnType("int");
 
                     b.Property<int>("SubscriptionId")
                         .HasColumnType("int");
 
-                    b.HasKey("Code");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ConsumerId");
+                    b.HasIndex("ConsumerName");
 
                     b.HasIndex("SubscriptionId");
 
@@ -300,16 +299,16 @@ namespace ISPRO.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime?>("ResumeDate")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("SubscriptionId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ValidityDate")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Username");
 
@@ -324,7 +323,7 @@ namespace ISPRO.Persistence.Migrations
                 {
                     b.HasOne("ISPRO.Persistence.Entities.UserAccount", "UserAccount")
                         .WithMany("CashPayments")
-                        .HasForeignKey("UserAccountId")
+                        .HasForeignKey("UserAccountName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -335,7 +334,7 @@ namespace ISPRO.Persistence.Migrations
                 {
                     b.HasOne("ISPRO.Persistence.Entities.UserAccount", "Consumer")
                         .WithMany("PrePaidCards")
-                        .HasForeignKey("ConsumerId")
+                        .HasForeignKey("ConsumerName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -17,13 +17,13 @@
                 @Html.DisplayNameFor(model => model.Username)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserType)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.DisplayName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Mobile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaxAllowedProjects)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreationDate)
@@ -47,13 +47,13 @@
                 <a asp-action="Details" asp-route-id="@item.Username">@item.Username</a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UserType)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.DisplayName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Mobile)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxAllowedProjects)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CreationDate)

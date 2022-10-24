@@ -9,6 +9,7 @@ using ISPRO.Persistence.Context;
 using ISPRO.Persistence.Entities;
 using ISPRO.Helpers.Exceptions;
 using ISPRO.Helpers;
+using System.Text.RegularExpressions;
 
 namespace ISPRO.Web.Controllers
 {
@@ -58,7 +59,7 @@ namespace ISPRO.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Username,UserType,DisplayName,Password,Mobile,Email,ExpiryDate,Active")] ManagerAccount managerAccount)
+        public async Task<IActionResult> Create([Bind("Username,UserType,DisplayName,Password,Mobile,Email,ExpiryDate,Active,MaxAllowedProjects")] ManagerAccount managerAccount)
         {
             try
             {
@@ -70,9 +71,18 @@ namespace ISPRO.Web.Controllers
                     }
                     else
                     {
-                        _context.Add(managerAccount);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
+                        Regex rgx = new Regex("^[a-zA-Z0-9_]*$");
+                        if (!rgx.IsMatch(managerAccount.Username.Trim()))
+                        {
+                            ModelState.AddModelError("Username", "Username could only be alphanumeric with '_'.");
+                        }
+                        else
+                        {
+                            managerAccount.Username = managerAccount.Username.Trim();
+                            _context.Add(managerAccount);
+                            await _context.SaveChangesAsync();
+                            return RedirectToAction(nameof(Index));
+                        }
                     }
                 }
             }
@@ -104,7 +114,7 @@ namespace ISPRO.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Username,UserType,DisplayName,Password,Mobile,Email,ExpiryDate,Active")] ManagerAccount managerAccount)
+        public async Task<IActionResult> Edit(string id, [Bind("Username,UserType,DisplayName,Password,Mobile,Email,ExpiryDate,Active,MaxAllowedProjects")] ManagerAccount managerAccount)
         {
             if (id != managerAccount.Username)
             {

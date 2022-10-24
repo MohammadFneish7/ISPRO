@@ -10,9 +10,9 @@ namespace ISPRO.Helpers
 {
     public class ControllerHelper
     {
-        public bool ValidateModelStateParentFieldByStrField(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary ModelState,string parentField, string strField, string strFieldValue)
+        public bool ValidateModelStateParentFieldByStrField(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary ModelState,string parentField, string strField, dynamic strFieldValue)
         {
-            if (ModelState[parentField].ValidationState == ModelValidationState.Invalid)
+            if (ModelState[parentField]?.ValidationState == ModelValidationState.Invalid)
             {
                 if (strFieldValue != null)
                 {

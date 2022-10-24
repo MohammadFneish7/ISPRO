@@ -25,6 +25,7 @@ namespace ISPRO.Persistence.Entities
         public int Quota { get; set; } = 0;
 
         [ForeignKey("Project")]
+        [Display(Name = "Project Name")]
         public string ProjectName { get; set; }
 
         [Required]

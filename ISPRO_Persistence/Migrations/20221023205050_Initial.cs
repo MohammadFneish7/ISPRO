@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ISPRO.Persistence.Migrations
 {
-    public partial class Create_Database : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -35,6 +35,7 @@ namespace ISPRO.Persistence.Migrations
                 {
                     Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     UserType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaxAllowedProjects = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastUpdate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -102,7 +103,7 @@ namespace ISPRO.Persistence.Migrations
                     ProjectName = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     SubscriptionId = table.Column<int>(type: "int", nullable: false),
                     UserType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ResumeDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ValidityDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastUpdate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -134,10 +135,10 @@ namespace ISPRO.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserAccountId = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    UserAccountName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RechargePeriod = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Ammount = table.Column<int>(type: "int", nullable: false),
+                    RechargePeriod = table.Column<int>(type: "int", nullable: false),
+                    Ammount = table.Column<double>(type: "float", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastUpdate = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -146,8 +147,8 @@ namespace ISPRO.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_CashPayments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CashPayments_UserAccounts_UserAccountId",
-                        column: x => x.UserAccountId,
+                        name: "FK_CashPayments_UserAccounts_UserAccountName",
+                        column: x => x.UserAccountName,
                         principalTable: "UserAccounts",
                         principalColumn: "Username",
                         onDelete: ReferentialAction.Cascade);
@@ -157,43 +158,42 @@ namespace ISPRO.Persistence.Migrations
                 name: "PrePaidCards",
                 columns: table => new
                 {
-                    Code = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SubscriptionId = table.Column<int>(type: "int", nullable: false),
-                    ConsumerId = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    ConsumerName = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ConsumptionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RechargePeriod = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Price = table.Column<int>(type: "int", nullable: false),
+                    RechargePeriod = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
                     Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastUpdate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PrePaidCards", x => x.Code);
+                    table.PrimaryKey("PK_PrePaidCards", x => x.Id);
                     table.ForeignKey(
                         name: "FK_PrePaidCards_Subscriptions_SubscriptionId",
                         column: x => x.SubscriptionId,
                         principalTable: "Subscriptions",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_PrePaidCards_UserAccounts_ConsumerId",
-                        column: x => x.ConsumerId,
+                        name: "FK_PrePaidCards_UserAccounts_ConsumerName",
+                        column: x => x.ConsumerName,
                         principalTable: "UserAccounts",
                         principalColumn: "Username",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CashPayments_UserAccountId",
+                name: "IX_CashPayments_UserAccountName",
                 table: "CashPayments",
-                column: "UserAccountId");
+                column: "UserAccountName");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PrePaidCards_ConsumerId",
+                name: "IX_PrePaidCards_ConsumerName",
                 table: "PrePaidCards",
-                column: "ConsumerId");
+                column: "ConsumerName");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PrePaidCards_SubscriptionId",

@@ -10,6 +10,7 @@ using ISPRO.Persistence.Entities;
 using ISPRO.Helpers.Exceptions;
 using ISPRO.Helpers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Text.RegularExpressions;
 
 namespace ISPRO.Web.Controllers
 {
@@ -71,12 +72,22 @@ namespace ISPRO.Web.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    Regex rgx = new Regex("^[a-zA-Z0-9]*$");
                     if (_context.Projects.Any(u => u.Name.ToLower() == project.Name.Trim().ToLower()))
                     {
                         ModelState.AddModelError("Name", "Name already taken.");
                     }
+                    else if (!rgx.IsMatch(project.Name.Trim()))
+                    {
+                        ModelState.AddModelError("Name", "Name could only be alphanumeric.");
+                    }
+                    else if (project.ProjectManager.MaxAllowedProjects <= _context.Projects.Include(p=> p.ProjectManager).Where(p=> p.ProjectManagerUsername==project.ProjectManagerUsername)?.Count())
+                    {
+                        ModelState.AddModelError("ModelError", $"Max allowed projects for manager '{project.ProjectManagerUsername}' has been reached.");
+                    }
                     else
                     {
+                        project.Name = project.Name.Trim();
                         _context.Add(project);
                         await _context.SaveChangesAsync();
                         return RedirectToAction(nameof(Index));

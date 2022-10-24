@@ -1,6 +1,10 @@
 ﻿using ISPRO.Persistence.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text;
+using System.Security.Cryptography;
+using System.Runtime.CompilerServices;
 
 namespace ISPRO.Persistence.Entities
 {
@@ -8,7 +12,7 @@ namespace ISPRO.Persistence.Entities
     {
         [Key]
         [Required]
-        public long Code { get; set; }
+        public string Id { get; set; }
 
         [ForeignKey("Subscription")]
         public int SubscriptionId { get; set; }
@@ -17,7 +21,8 @@ namespace ISPRO.Persistence.Entities
         public Subscription Subscription { get; set; }
 
         [ForeignKey("Consumer")]
-        public string ConsumerId { get; set; }
+        [Display(Name = "Consumer")]
+        public string? ConsumerName { get; set; }
 
         public UserAccount? Consumer { get; set; }
 
@@ -26,22 +31,39 @@ namespace ISPRO.Persistence.Entities
         [DataType(DataType.DateTime)]
         public DateTime? ExpiryDate { get; set; } = DateTime.Now;
 
-        [Required]
         [Display(Name = "Consumption Date")]
         [DataType(DataType.DateTime)]
         public DateTime? ConsumptionDate { get; set; }
 
         [Required]
-        [Display(Name = "Recharge Period")]
-        public TimeSpan RechargePeriod { get; set; } = TimeSpan.FromDays(30);
+        [Display(Name = "Recharge Period (Days)")]
+        [Range(0, 1000)]
+        public int RechargePeriod { get; set; } = 30;
 
         [Required]
-        public int Price { get; set; } = 0;
+        [Range(0, double.MaxValue)]
+        public double Price { get; set; } = 0;
 
         [NotMapped]
-        public bool Consumed => Consumer != null;
+        [Display(Name = "Is Expired")]
+        public bool IsExpired { get => ExpiryDate.HasValue && ExpiryDate.Value < DateTime.Now; }
+
+        [NotMapped]
+        [Display(Name = "Is Consumed")]
+        public bool IsConsumed => Consumer != null;
 
         [Required]
         public Currency Currency { get; set; } = Currency.USD;
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static string GenerateId()
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var saltedPassword = string.Format("{0}{1}", "ISPRO-PPC", DateTime.Now.Ticks);
+                byte[] saltedPasswordAsBytes = Encoding.UTF8.GetBytes(saltedPassword);
+                return BitConverter.ToString((sha256.ComputeHash(saltedPasswordAsBytes))).Replace("-", string.Empty).Substring(0,24);
+            }
+        }
     }
 }

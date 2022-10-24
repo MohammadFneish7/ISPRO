@@ -27,16 +27,18 @@ namespace ISPRO.Persistence.Context
         public DataContext() : base()
         {
             Console.WriteLine("Starting migration...");
+            //base.Database.EnsureCreated();
         }
 
         public DataContext(DbContextOptions options) : base(options)
         {
             Console.WriteLine("Starting migration...");
+            //base.Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=tcp:ispro-dbserver.database.windows.net,1433;Initial Catalog=ISPRO-DB;Persist Security Info=False;User ID=superuser;Password=Warning@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            //optionsBuilder.UseSqlServer("Server=tcp:ispro-dbserver.database.windows.net,1433;Initial Catalog=ISPRO-DB;Persist Security Info=False;User ID=superuser;Password=Warning@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             base.OnConfiguring(optionsBuilder);
         }
 
@@ -47,11 +49,11 @@ namespace ISPRO.Persistence.Context
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserAccount>().HasMany(u => u.PrePaidCards).WithOne(p => p.Consumer)
-                .HasForeignKey(p => p.ConsumerId)
+                .HasForeignKey(p => p.ConsumerName)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserAccount>().HasMany(u => u.CashPayments).WithOne(p => p.UserAccount)
-                .HasForeignKey(p => p.UserAccountId)
+                .HasForeignKey(p => p.UserAccountName)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Project>().HasMany(p => p.UserAccounts).WithOne(u => u.Project)
@@ -159,7 +161,7 @@ namespace ISPRO.Persistence.Context
                 user.UserType = UserType.MANAGER;
             }
             else if (user.GetType() == typeof(UserAccount)) { 
-                domain = "users.com";
+                domain = $"{((UserAccount)user).ProjectName}.com";
                 user.UserType = UserType.USER_ACCOUNT;
             }
 

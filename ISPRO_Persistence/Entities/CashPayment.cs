@@ -11,7 +11,7 @@ namespace ISPRO.Persistence.Entities
         public int Id { get; set; }
 
         [ForeignKey("UserAccount")]
-        public string UserAccountId { get; set; }
+        public string UserAccountName { get; set; }
 
         [Required]
         public UserAccount? UserAccount { get; set; }
@@ -21,14 +21,16 @@ namespace ISPRO.Persistence.Entities
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
         [UIHint("DateTimePicker")]
-        public DateTime? PaymentDate { get; set; }
+        public DateTime PaymentDate { get; set; }
 
         [Required]
-        [Display(Name = "Recharge Period")]
-        public TimeSpan RechargePeriod { get; set; } = TimeSpan.FromDays(30);
+        [Display(Name = "Recharge Period (Days)")]
+        [Range(0, 1000)]
+        public int RechargePeriod { get; set; } = 30;
 
         [Required]
-        public int Ammount { get; set; } = 0;
+        [Range(0, double.MaxValue)]
+        public double Ammount { get; set; } = 0;
 
         [Required]
         public Currency Currency { get; set; } = Currency.USD;
