@@ -29,10 +29,12 @@ namespace ISPRO.Persistence.Entities
         [Required]
         [Display(Name = "Expiry Date")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? ExpiryDate { get; set; } = DateTime.Now;
 
         [Display(Name = "Consumption Date")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? ConsumptionDate { get; set; }
 
         [Required]

@@ -21,6 +21,7 @@ namespace ISPRO.Persistence.Objects
         [Required]
         [Display(Name = "Expiry Date")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? ExpiryDate { get; set; } = DateTime.Now;
 
         [Required]

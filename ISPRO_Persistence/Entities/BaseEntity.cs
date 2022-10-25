@@ -13,11 +13,13 @@ namespace ISPRO.Persistence.Entities
     {
         [Display(Name = "Creation Date")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         [Editable(false)]
         public virtual DateTime? CreationDate { get; set; }
 
         [Display(Name = "Last Update")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         [Editable(false)]
         public virtual DateTime? LastUpdate { get; set; }
 

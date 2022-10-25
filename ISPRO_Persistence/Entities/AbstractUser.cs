@@ -34,6 +34,7 @@ namespace ISPRO.Persistence.Entities
 
         [Display(Name = "Expiry Date")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         [Required]
         public virtual DateTime? ExpiryDate { get; set; } = DateTime.Now;
 

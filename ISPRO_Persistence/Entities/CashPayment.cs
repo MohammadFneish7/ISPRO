@@ -19,7 +19,7 @@ namespace ISPRO.Persistence.Entities
         [Required]
         [Display(Name = "Payment Date")]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         [UIHint("DateTimePicker")]
         public DateTime PaymentDate { get; set; }
 

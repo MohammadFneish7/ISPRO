@@ -8,12 +8,13 @@
 <h1>PrePaid Cards</h1>
 
 <p>
-    <a asp-action="Generate" style="margin-left:10px">Generate Cards</a>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Generate" class="btn btn-primary" style="float: right; margin-bottom:10px;margin-left:10px;">Generate Cards</a>
+    <a asp-action="Create" class="btn btn-primary" style="float: right; margin-bottom:10px;">Create New</a>
 </p>
-<table class="table">
+<table class="table display compact">
     <thead>
         <tr>
+            <th>Actions</th>
             <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
@@ -24,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.RechargePeriod)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price) 
+                @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ExpiryDate)
@@ -47,50 +48,50 @@
             <th>
                 @Html.DisplayNameFor(model => model.LastUpdate)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">@item.Id</a>
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash" style="color:red; margin-left:10px"></i></a>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">@item.Id</a>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Subscription.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RechargePeriod)
-            </td>
-            <td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RechargePeriod)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Price) @Html.DisplayFor(modelItem => item.Currency)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpiryDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsExpired)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ConsumerName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ConsumptionDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsConsumed)
-            </td>
-            <td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpiryDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsExpired)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ConsumerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ConsumptionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsConsumed)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.CreationDate)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.LastUpdate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

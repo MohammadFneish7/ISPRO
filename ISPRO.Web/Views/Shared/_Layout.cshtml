@@ -8,13 +8,14 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/icons/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/lib/jquery-datetimepicker/css/jquery.datetimepicker.css" />
     <link rel="stylesheet" href="~/lib/datatables/datatables.min.css" />
-    <link rel="stylesheet" href="~/lib/datatables/FixedColumns-4.1.0/css/fixedColumns.dataTables.min.css" />
-    <link rel="stylesheet" href="~/lib/datatables/SearchBuilder-1.3.4/css/searchBuilder.dataTables.min.css" />
-    <link rel="stylesheet" href="~/lib/datatables/Buttons-2.2.3/css/buttons.dataTables.min.css" />
-    <link rel="stylesheet" href="~/lib/datatables/Select-1.4.0/css/select.dataTables.min.css" />
+    <link rel="stylesheet" href="~/lib/datatables/FixedColumns-4.1.0/css/fixedColumns.bootstrap5.min.css" />
+    <link rel="stylesheet" href="~/lib/datatables/SearchBuilder-1.3.4/css/searchBuilder.bootstrap5.min.css" />
+    <link rel="stylesheet" href="~/lib/datatables/Buttons-2.2.3/css/buttons.bootstrap5.min.css" />
+    <link rel="stylesheet" href="~/lib/datatables/Select-1.4.0/css/select.bootstrap5.min.css" />
+    <link rel="stylesheet" href="~/css/overlay.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ISPRO.Web.styles.css" asp-append-version="true" />
-    
+
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -58,6 +59,9 @@
         </nav>
     </header>
     <div class="container">
+        <div id="overlay">
+            <div class="loader"></div>
+        </div>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -74,66 +78,144 @@
     <script src="~/lib/jquery-datetimepicker/js/jquery.datetimepicker.js"></script>
     <script src="~/lib/datatables/datatables.min.js"></script>
     <script src="~/lib/datatables/FixedColumns-4.1.0/js/dataTables.fixedColumns.min.js"></script>
-    <script src="~/lib/datatables/SearchBuilder-1.3.4/js/searchBuilder.dataTables.min.js"></script>
-    <script src="~/lib/datatables/Buttons-2.2.3/js/buttons.dataTables.min.js"></script>
-    <script src="~/lib/datatables/Select-1.4.0/js/select.dataTables.min.js"></script>
+    <script src="~/lib/datatables/SearchBuilder-1.3.4/js/searchBuilder.bootstrap5.min.js"></script>
+    <script src="~/lib/datatables/Buttons-2.2.3/js/buttons.bootstrap5.min.js"></script>
+    <script src="~/lib/datatables/Select-1.4.0/js/select.bootstrap5.min.js"></script>
     <script src="~/lib/datatables/Buttons-2.2.3/js/buttons.print.min.js"></script>
     <script src="~/lib/datatables/Buttons-2.2.3/js/buttons.colVis.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            $('.table').DataTable({
-                scrollX: true, 
-                fixedHeader: true, 
-                dom: 'Bfrtip', //Qfrtip
-                select: true,
-                buttons: [
-                    {
-                        extend: 'print',
-                        text: 'Print all',
-                        exportOptions: {
-                            columns: ':visible',
-                            modifier: {
-                                selected: null
+        function fade(element) {
+            var op = 1;  // initial opacity
+            var timer = setInterval(function () {
+                if (op <= 0.1) {
+                    clearInterval(timer);
+                    element.style.display = 'none';
+                }
+                element.style.opacity = op;
+                element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+                op -= op * 0.1;
+            }, 10);
+        }
+
+        var dateInputMask = function dateInputMask(elm) {
+            elm.addEventListener('keypress', function (e) {
+                if (e.keyCode < 47 || e.keyCode > 57) {
+                    e.preventDefault();
+                }
+
+                var len = elm.value.length;
+
+                // If we're at a particular place, let the user type the slash
+                // i.e., 12/12/1212
+                if (len !== 1 || len !== 3) {
+                    if (e.keyCode == 47) {
+                        e.preventDefault();
+                    }
+                }
+
+                // If they don't add the slash, do it for them...
+                if (len === 2) {
+                    elm.value += '/';
+                }
+
+                // If they don't add the slash, do it for them...
+                if (len === 5) {
+                    elm.value += '/';
+                }
+            });
+        };
+
+
+        $(document).ready(function () {
+            try {
+                $('.table').DataTable({
+                    scrollX: true,
+                    fixedHeader: true,
+                    dom: 'QBlfrtip', //Qfrtip
+                    select: true,
+                    pagingType: 'full_numbers',
+                    lengthMenu: [
+                        [10, 50, 100, -1],
+                        [10, 50, 100, 'All'],
+                    ],
+                    buttons: [
+                        {
+                            extend: 'print',
+                            text: 'Print all',
+                            exportOptions: {
+                                columns: ':visible',
+                                modifier: {
+                                    selected: null
+                                }
                             }
+                        },
+                        {
+                            extend: 'print',
+                            text: 'Print selected'
+                        },
+                        'colvis'
+                    ],
+                    columnDefs: [
+                        {
+                            targets: -1,
+                            visible: false
+                        },
+                        {
+                            targets: 5,
+                            type: 'date',
+                        },
+                    ],
+                });
+
+                $('select').each(function (i, obj) {
+                    $(obj).removeClass('form-control').addClass('form-select').css('min-width', '60px').val($(obj).val());
+                });
+
+                $('input[type="datetime-local"]').each(function (i, obj) {
+                    let v = '';
+                    if ($(obj).attr('value') != '') {
+                        if($(obj).attr('value').endsWith('Z')){
+                            v = moment(new Date($(obj).attr('value'))).format('DD/MM/YYYY')
+                        }else{
+                            v = $(obj).attr('value')
                         }
-                    },
-                    {
-                        extend: 'print',
-                        text: 'Print selected'
-                    },
-                    'colvis'
-                ],
-                columnDefs: [
-                    {
-                        targets: -1,
-                        visible: false
-                    },
-                    {
-                        targets: 4,
-                        type: 'date',
-                    },
-                ],
-            });
-            $('.table').addClass('display compact');
-            $('p a').addClass('btn btn-primary').css('float','right').css('margin-bottom','10px');
-            $("a:contains('Edit')").html('<i class="bi bi-pencil-square"></i>');
-            $("a:contains('Delete')").html('<i class="bi bi-trash" style="color:red; margin-left:10px"></i>');
-            $('select').each(function(i, obj) {
-               $(obj).removeClass('form-control').addClass('form-select').css('min-width','60px').val($(obj).val());
-            });
-            $('input[type="datetime-local"]').each(function(i, obj) {
-                let dt = ($(obj).val() == '') ? new Date() : new Date($(obj).val());
-                let v = moment(dt).format('M/D/YYYY, hh:mm:ss A');
-                $(obj).attr('type','text').attr('readonly', 'readonly');
-                $(obj).datetimepicker({format: 'm/d/Y, H:i:s A',});
-                $(obj).val(v);
-                $(obj).parent().append('<i style="position: absolute;right: 12px;top: 31px;" class="bi bi-calendar-week"></i>');
-                $(obj).closest('.form-group').css('position','relative');
-            });
-            $('[data-val-required]').each((i, o) => {
-                $(o).closest('.form-group').find('.control-label').addClass('required-label')
-            })
+                    }else{
+                        v = moment(new Date()).format('DD/MM/YYYY');
+                    }
+
+                    $(obj).attr('type', 'datetime');
+                    $(obj).datetimepicker({ format: 'd/m/Y', });
+                    $(obj).val(v);
+                    $(obj).parent().append('<i style="position: absolute;right: 12px;top: 31px;" class="bi bi-calendar-week"></i>');
+                    $(obj).closest('.form-group').css('position', 'relative');
+                    dateInputMask($(obj)[0]);
+                });
+
+                $('form').submit(function () {
+                    if ($(this).valid()) {
+                        $('input[type="datetime"]').each(function (i, obj) {
+                            if ($(obj).val() != '') {
+                                let v = $(obj).val();
+                                let [day, month, year] = v.split('/');
+                                $(obj).val(year + '-' + month + '-' + day + 'T00:00:00.000Z');
+                            }
+                        });
+                    }
+                    return true;
+                });
+
+                $('[data-val-required]').each((i, o) => {
+                    $(o).closest('.form-group').find('.control-label').addClass('required-label')
+                });
+            }
+            catch (err) {
+                console.error(err);
+            }
+            setTimeout(
+                function () {
+                    fade(document.getElementById('overlay'));
+                }, 500);
         });
     </script>
     <script src="~/js/site.js" asp-append-version="true"></script>

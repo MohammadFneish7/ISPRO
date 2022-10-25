@@ -29,6 +29,7 @@ namespace ISPRO.Persistence.Entities
         [Required]
         [Display(Name = "Valid Until")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public virtual DateTime? ValidityDate { get; set; } = DateTime.Now;
 
         [NotMapped]
