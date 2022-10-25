@@ -10,9 +10,11 @@ using ISPRO.Persistence.Entities;
 using ISPRO.Helpers.Exceptions;
 using ISPRO.Helpers;
 using System.Text.RegularExpressions;
+using ISPRO.Web.Authorization;
 
 namespace ISPRO.Web.Controllers
 {
+    [AuthorizeUserLevel(UserLevelAuth.ADMIN)]
     public class ManagerAccountsController : Controller
     {
         private readonly DataContext _context;

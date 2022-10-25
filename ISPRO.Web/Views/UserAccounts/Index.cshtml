@@ -29,23 +29,26 @@
             <th>
                 @Html.DisplayNameFor(model => model.Mobile)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreationDate)
-            </th>
-            <th>
+            <th class="type-date">
                 @Html.DisplayNameFor(model => model.ExpiryDate)
             </th>
-            <th>
+            <th class="type-bool" reversed-bool="true" true-verb="Expired" false-verb="Genuine">
                 @Html.DisplayNameFor(model => model.IsExpired)
             </th>
-            <th>
+            <th class="type-date">
                 @Html.DisplayNameFor(model => model.ValidityDate)
             </th>
-            <th>
+            <th class="type-bool" reversed-bool="false" true-verb="Valid" false-verb="Invalid">
                 @Html.DisplayNameFor(model => model.IsValid)
             </th>
-            <th>
+            <th class="type-bool" reversed-bool="false" true-verb="Active" false-verb="Inactive">
                 @Html.DisplayNameFor(model => model.Active)
+            </th>
+            <th class="type-date">
+                @Html.DisplayNameFor(model => model.CreationDate)
+            </th>
+            <th class="type-date">
+                @Html.DisplayNameFor(model => model.LastUpdate)
             </th>
         </tr>
     </thead>
@@ -73,9 +76,6 @@
                     @Html.DisplayFor(modelItem => item.Mobile)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CreationDate)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.ExpiryDate)
                 </td>
                 <td>
@@ -89,6 +89,12 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Active)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastUpdate)
                 </td>
             </tr>
         }

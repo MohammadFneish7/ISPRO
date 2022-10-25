@@ -11,9 +11,11 @@ using ISPRO.Helpers.Exceptions;
 using ISPRO.Helpers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Text.RegularExpressions;
+using ISPRO.Web.Authorization;
 
 namespace ISPRO.Web.Controllers
 {
+    [AuthorizeUserLevel(UserLevelAuth.SUPERUSER)]
     public class ProjectsController : Controller
     {
         private readonly DataContext _context;

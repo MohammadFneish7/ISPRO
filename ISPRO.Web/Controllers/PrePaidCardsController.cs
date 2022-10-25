@@ -10,10 +10,12 @@ using ISPRO.Persistence.Entities;
 using ISPRO.Helpers.Exceptions;
 using ISPRO.Helpers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using ISPRO.Persistence.Objects;
+using ISPRO.Web.Models;
+using ISPRO.Web.Authorization;
 
 namespace ISPRO.Web.Controllers
 {
+    [AuthorizeUserLevel(UserLevelAuth.SUPERUSER)]
     public class PrePaidCardsController : Controller
     {
         private readonly DataContext _context;

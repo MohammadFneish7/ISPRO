@@ -194,3 +194,11 @@ div.dt-buttons {
     float: right;
     margin-left: 10px;
 }
+
+.text-bg-danger {
+    background-color: #e95757;
+}
+
+.text-bg-success {
+    background-color: #80c769;
+}

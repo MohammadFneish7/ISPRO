@@ -10,9 +10,13 @@ using ISPRO.Persistence.Entities;
 using ISPRO.Helpers.Exceptions;
 using ISPRO.Helpers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Authorization;
+using ISPRO.Web.Authorization;
+using ISPRO.Persistence.Enums;
 
 namespace ISPRO.Web.Controllers
 {
+    [AuthorizeUserLevel(UserLevelAuth.SUPERUSER)]
     public class CashPaymentsController : Controller
     {
         private readonly DataContext _context;

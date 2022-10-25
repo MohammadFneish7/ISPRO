@@ -28,24 +28,27 @@
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Currency)
+            </th>
+            <th class="type-date">
                 @Html.DisplayNameFor(model => model.ExpiryDate)
             </th>
-            <th>
+            <th class="type-bool" reversed-bool="true" true-verb="Expired" false-verb="Alive">
                 @Html.DisplayNameFor(model => model.IsExpired)
+            </th>
+            <th class="type-bool" reversed-bool="false" true-verb="True" false-verb="False">
+                @Html.DisplayNameFor(model => model.IsConsumed)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ConsumerName)
             </th>
-            <th>
+            <th class="type-date">
                 @Html.DisplayNameFor(model => model.ConsumptionDate)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsConsumed)
-            </th>
-            <th>
+            <th class="type-date">
                 @Html.DisplayNameFor(model => model.CreationDate)
             </th>
-            <th>
+            <th class="type-date">
                 @Html.DisplayNameFor(model => model.LastUpdate)
             </th>
         </tr>
@@ -68,7 +71,10 @@
                     @Html.DisplayFor(modelItem => item.RechargePeriod)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price) @Html.DisplayFor(modelItem => item.Currency)
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Currency)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ExpiryDate)
@@ -77,13 +83,13 @@
                     @Html.DisplayFor(modelItem => item.IsExpired)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.IsConsumed)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.ConsumerName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ConsumptionDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsConsumed)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreationDate)

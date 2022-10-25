@@ -25,4 +25,8 @@
     <ProjectReference Include="..\ISPRO_Persistence\ISPRO.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Objects\" />
+  </ItemGroup>
+
 </Project>

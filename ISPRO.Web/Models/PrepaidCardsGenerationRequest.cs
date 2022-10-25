@@ -8,11 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISPRO.Persistence.Objects
+namespace ISPRO.Web.Models
 {
     public class PrepaidCardsGenerationRequest
     {
-        [ForeignKey("Subscription")]
         public int SubscriptionId { get; set; }
 
         [Required]

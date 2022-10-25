@@ -12,8 +12,12 @@ namespace ISPRO.Web.Controllers
         {
             _logger = logger;
         }
-
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult ContactUs()
         {
             return View();
         }

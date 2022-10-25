@@ -27,12 +27,16 @@ namespace ISPRO.Persistence.Context
         public DataContext() : base()
         {
             Console.WriteLine("Starting migration...");
+
+            EnsureBaseConfigExist();
             //base.Database.EnsureCreated();
         }
 
         public DataContext(DbContextOptions options) : base(options)
         {
             Console.WriteLine("Starting migration...");
+
+            EnsureBaseConfigExist();
             //base.Database.EnsureCreated();
         }
 
@@ -96,6 +100,7 @@ namespace ISPRO.Persistence.Context
                 .HasConversion(UserTypeConverter);
 
             base.OnModelCreating(modelBuilder);
+
         }
 
         public IQueryable Set(Type T)
@@ -116,7 +121,7 @@ namespace ISPRO.Persistence.Context
                 Username = "admin@admins.com",
                 DisplayName = "Administrator",
                 ExpiryDate = DateTime.MaxValue,
-                Password = CryptoHelper.ComputeSHA256Hash("Warning@1234")
+                Password = "Warning@1234"
             });
 
             this.SaveChanges();
@@ -126,7 +131,10 @@ namespace ISPRO.Persistence.Context
         {
             if (typeof(TEntity).IsSubclassOf(typeof(AbstractUser)))
             {
-                ((AbstractUser)(object)entity).Password = CryptoHelper.ComputeSHA256Hash("123456789");
+                if(string.IsNullOrEmpty(((AbstractUser)(object)entity).Password))
+                    ((AbstractUser)(object)entity).Password = CryptoHelper.ComputeSHA256Hash("123456789");
+                else
+                    ((AbstractUser)(object)entity).Password = CryptoHelper.ComputeSHA256Hash(((AbstractUser)(object)entity).Password);
             }
             Validate(entity);
             ((BaseEntity)(object)entity).CreationDate = DateTime.Now;

@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewData["Title"] = "ContactUs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Contact Us</h1>
+
+<hr />
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Mobile:
+        </dt>
+        <dd class="col-sm-10">
+            +961 70434962
+        </dd>
+        <dt class="col-sm-2">
+            Email:
+        </dt>
+        <dd class="col-sm-10">
+            MohammadFneish7@gmail.com
+        </dd>
+    </dl>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+}
