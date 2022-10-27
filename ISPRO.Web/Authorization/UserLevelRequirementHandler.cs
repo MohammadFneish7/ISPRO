@@ -15,9 +15,9 @@ namespace ISPRO.Web.Authorization
                 if (role != null)
                 {
                     if (
-                       (requirement.UserLevelAuth == UserLevelAuth.ADMIN && (role.Value == UserType.ADMIN.ToString()))
-                    || (requirement.UserLevelAuth == UserLevelAuth.SUPERUSER && (role.Value == UserType.ADMIN.ToString() || role.Value == UserType.MANAGER.ToString()))
-                    || ((requirement.UserLevelAuth == UserLevelAuth.AUTHENTICATED) && (role.Value == UserType.ADMIN.ToString() || role.Value == UserType.MANAGER.ToString() || role.Value == UserType.USER_ACCOUNT.ToString()))
+                       (requirement.UserLevelAuth == UserLevelAuth.ADMIN && (role?.Value == UserType.ADMIN.ToString()))
+                    || (requirement.UserLevelAuth == UserLevelAuth.SUPERUSER && (role?.Value == UserType.ADMIN.ToString() || role?.Value == UserType.MANAGER.ToString()))
+                    || ((requirement.UserLevelAuth == UserLevelAuth.AUTHENTICATED) && (role?.Value == UserType.ADMIN.ToString() || role?.Value == UserType.MANAGER.ToString() || role?.Value == UserType.USER_ACCOUNT.ToString()))
                     )
                     {
                         context.Succeed(requirement);

@@ -17,6 +17,14 @@ body {
   margin-bottom: 60px;
 }
 
+.bi{
+    margin-right: 5px;
+}
+
+.nav-link:hover {
+    color: #9ae3ffed !important;
+}
+
 .required-label:after {
     content: " *";
     color: red;

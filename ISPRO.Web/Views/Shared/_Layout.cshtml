@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using ISPRO.Persistence.Enums
+@using ISPRO.Web.Authorization
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -22,46 +27,65 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ISPRO.Web</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-weight: bold;"><i class="bi bi-browser-edge"></i> ISPRO.WEB</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="bi bi-list"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ManagerAccounts" asp-action="Index">Managers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">Projects</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Subscriptions" asp-action="Index">Subscriptions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="UserAccounts" asp-action="Index">Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="PrepaidCards" asp-action="Index">Prepaid Cards</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="CashPayments" asp-action="Index">Cash Payments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item" style="flex-grow: 1;">
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Login">Login</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Username </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
-                                <li><a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Logout">Logout</a></li>
-                            </ul>
-                        </li>
+                        @{
+                            if ((AuthorizationService.AuthorizeAsync(User, UserLevelAuth.ADMIN.ToString())).Result.Succeeded)
+                            {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="ManagerAccounts" asp-action="Index"><i class="bi bi-person-workspace"></i>Managers</a>
+                                    </li>
+                            }
+
+                            if ((AuthorizationService.AuthorizeAsync(User, UserLevelAuth.SUPERUSER.ToString())).Result.Succeeded)
+                            {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index"><i class="bi bi-box"></i>Projects</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Subscriptions" asp-action="Index"><i class="bi bi-boxes"></i>Subscriptions</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="UserAccounts" asp-action="Index"><i class="bi bi-people"></i>Users</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="PrepaidCards" asp-action="Index"><i class="bi bi-credit-card-2-front"></i>Prepaid Cards</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="CashPayments" asp-action="Index"><i class="bi bi-cash-coin"></i>Cash Payments</a>
+                                    </li>
+                            }
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-check"></i>Privacy</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactUs"><i class="bi bi-headset"></i>Contact Us</a>
+                                </li>
+                                <li class="nav-item" style="flex-grow: 1;"></li>
+
+                            if ((AuthorizationService.AuthorizeAsync(User, UserLevelAuth.AUTHENTICATED.ToString())).Result.Succeeded){
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <i class="bi bi-person-fill"></i>@User.Identity.Name </a>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                            @if (!(AuthorizationService.AuthorizeAsync(User, UserLevelAuth.SUPERUSER.ToString())).Result.Succeeded){
+                                            <li><a class="dropdown-item" asp-action="Details" asp-controller="UserAccounts" asp-route-id="@User.Identity.Name"><i class="bi bi-person-badge"></i>Profile</a></li>
+                                            }
+                                            <li><a class="dropdown-item" asp-area="" asp-controller="Authentication" asp-action="Logout"><i class="bi bi-box-arrow-left"></i>Logout</a></li>
+                                        </ul>
+                                    </li>
+                            }else{
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" asp-action="Login"><i class="bi bi-box-arrow-in-right"></i>Login</a>
+                                    </li>
+                            }
+                        }
+                        
                     </ul>
                 </div>
             </div>
@@ -78,7 +102,7 @@
 
     <footer class="border-top footer text-muted" style="background-color: white;margin-top:100px">
         <div class="container footer-item">
-            &copy; 2022 - ISPRO.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2022 - ISPRO.WEB - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -140,29 +164,29 @@
             try {
                 let cols = [];
                 $('th').each(function (i, obj) {
-                    if ($(obj).hasClass('type-date')){
+                    if ($(obj).hasClass('type-date')) {
                         cols.push({
                             searchBuilderType: 'moment-DD/MM/YYYY',
                             type: 'date',
                         });
-                    }else if ($(obj).hasClass('type-bool')) {
+                    } else if ($(obj).hasClass('type-bool')) {
                         let trueVerb = $(obj).attr('true-verb');
                         let falseVerb = $(obj).attr('false-verb');
-                        let reversed = ($(obj).attr('reversed-bool')=='true');
+                        let reversed = ($(obj).attr('reversed-bool') == 'true');
                         let trueBadgeClass = (reversed ? 'badge rounded-pill text-bg-danger' : 'badge rounded-pill text-bg-success')
                         let falseBadgeClass = (reversed ? 'badge rounded-pill text-bg-success' : 'badge rounded-pill text-bg-danger')
-                        $('tbody tr td:nth-child(' + (i+1) + ')').each(function (j, td){
-                             let chk = $(td).find('input[type="checkbox"]').first();
-                             let v = chk.is(":checked");
-                             if(v){
+                        $('tbody tr td:nth-child(' + (i + 1) + ')').each(function (j, td) {
+                            let chk = $(td).find('input[type="checkbox"]').first();
+                            let v = chk.is(":checked");
+                            if (v) {
                                 $(td).append('<span class="' + trueBadgeClass + '">' + trueVerb + '</span>');
-                             }else{
+                            } else {
                                 $(td).append('<span class="' + falseBadgeClass + '">' + falseVerb + '</span>');
-                             }
-                             chk.css("display","none");
+                            }
+                            chk.css("display", "none");
                         });
                         cols.push(null);
-                    }else{
+                    } else {
                         cols.push(null);
                     }
                 });
@@ -204,12 +228,12 @@
                 $('input[type="datetime-local"]').each(function (i, obj) {
                     let v = '';
                     if ($(obj).attr('value') != '') {
-                        if($(obj).attr('value').endsWith('Z')){
+                        if ($(obj).attr('value').endsWith('Z')) {
                             v = moment(new Date($(obj).attr('value'))).format('DD/MM/YYYY')
-                        }else{
+                        } else {
                             v = $(obj).attr('value')
                         }
-                    }else{
+                    } else {
                         v = moment(new Date()).format('DD/MM/YYYY');
                     }
 

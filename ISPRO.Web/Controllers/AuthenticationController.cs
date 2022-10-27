@@ -68,7 +68,7 @@ namespace ISPRO.Web.Controllers
                             throw new ModelException("User deavtivated!! Please contact your administrator to reactivate your user account.");
 
                         var claims = new List<Claim>
-                        {
+                        { 
                             new Claim(ClaimTypes.Name, user.Username),
                             new Claim(ClaimTypes.Role, user.UserType.ToString()),
                         };
