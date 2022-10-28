@@ -160,9 +160,9 @@ namespace ISPRO.Persistence.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SubscriptionId = table.Column<int>(type: "int", nullable: false),
-                    ConsumerName = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    ConsumerName = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ConsumptionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ConsumptionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RechargePeriod = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),

@@ -26,16 +26,12 @@ namespace ISPRO.Persistence.Context
 
         public DataContext() : base()
         {
-            Console.WriteLine("Starting migration...");
-
             EnsureBaseConfigExist();
             //base.Database.EnsureCreated();
         }
 
         public DataContext(DbContextOptions options) : base(options)
         {
-            Console.WriteLine("Starting migration...");
-
             EnsureBaseConfigExist();
             //base.Database.EnsureCreated();
         }
@@ -116,15 +112,21 @@ namespace ISPRO.Persistence.Context
 
         private void EnsureBaseConfigExist()
         {
-            if (!this.AdminAccounts.Any()) this.Add(new AdminAccount()
+            try
             {
-                Username = "admin@admins.com",
-                DisplayName = "Administrator",
-                ExpiryDate = DateTime.MaxValue,
-                Password = "Warning@1234"
-            });
+                if (!this.AdminAccounts.Any()) this.Add(new AdminAccount()
+                {
+                    Username = "admin@admins.com",
+                    DisplayName = "Administrator",
+                    ExpiryDate = DateTime.MaxValue,
+                    Password = "Warning@1234"
+                });
 
-            this.SaveChanges();
+                this.SaveChanges();
+            }
+            catch (Exception)
+            {
+            }
         }
 
         public override EntityEntry<TEntity> Add<TEntity>(TEntity entity)

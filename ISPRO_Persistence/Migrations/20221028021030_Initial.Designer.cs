@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ISPRO.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221023205050_Initial")]
+    [Migration("20221028021030_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,11 +158,9 @@ namespace ISPRO.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConsumerName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("ConsumptionDate")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("CreationDate")
@@ -335,8 +333,7 @@ namespace ISPRO.Persistence.Migrations
                     b.HasOne("ISPRO.Persistence.Entities.UserAccount", "Consumer")
                         .WithMany("PrePaidCards")
                         .HasForeignKey("ConsumerName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ISPRO.Persistence.Entities.Subscription", "Subscription")
                         .WithMany("PrePaidCards")
