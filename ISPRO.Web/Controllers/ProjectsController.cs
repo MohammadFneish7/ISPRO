@@ -12,6 +12,8 @@ using ISPRO.Helpers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Text.RegularExpressions;
 using ISPRO.Web.Authorization;
+using ISPRO.Persistence.Enums;
+using System.Linq.Expressions;
 
 namespace ISPRO.Web.Controllers
 {
@@ -19,6 +21,7 @@ namespace ISPRO.Web.Controllers
     public class ProjectsController : Controller
     {
         private readonly DataContext _context;
+        private Expression<Func<Project, bool>> expression;
 
         public ProjectsController(DataContext context)
         {
@@ -28,8 +31,12 @@ namespace ISPRO.Web.Controllers
         // GET: Projects
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Projects.Include(p => p.ProjectManager);
-            return View(await dataContext.ToListAsync());
+            if (!User.IsInRole(UserType.ADMIN.ToString()))
+                expression = x => x.ProjectManager.Username == User.Identity.Name;
+            else
+                expression = x => true == true;
+            var data = _context.Projects.Include(p => p.ProjectManager).Where(expression);
+            return View(await data.ToListAsync());
         }
 
         // GET: Projects/Details/5
@@ -54,7 +61,7 @@ namespace ISPRO.Web.Controllers
         // GET: Projects/Create
         public IActionResult Create()
         {
-            ViewData["ProjectManagerUsername"] = new SelectList(_context.ManagerAccounts, "Username", "Username");
+            ViewData["ProjectManagerUsername"] = new SelectList(_context.ManagerAccounts.ToList(), "Username", "Username");
             return View();
         }
 
@@ -101,7 +108,7 @@ namespace ISPRO.Web.Controllers
                 ModelState.AddModelError("ModelError", ex.Message);
             }
 
-            ViewData["ProjectManagerUsername"] = new SelectList(_context.ManagerAccounts, "Username", "Username", project.ProjectManagerUsername);
+            ViewData["ProjectManagerUsername"] = new SelectList(_context.ManagerAccounts.ToList(), "Username", "Username", project.ProjectManagerUsername);
             return View(project);
         }
 
@@ -118,7 +125,7 @@ namespace ISPRO.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProjectManagerUsername"] = new SelectList(_context.ManagerAccounts, "Username", "Username", project.ProjectManagerUsername);
+            ViewData["ProjectManagerUsername"] = new SelectList(_context.ManagerAccounts.ToList(), "Username", "Username", project.ProjectManagerUsername);
             return View(project);
         }
 
@@ -169,7 +176,7 @@ namespace ISPRO.Web.Controllers
                     ModelState.AddModelError("ModelError", ex.Message);
                 }
             }
-            ViewData["ProjectManagerUsername"] = new SelectList(_context.ManagerAccounts, "Username", "Username", project.ProjectManagerUsername);
+            ViewData["ProjectManagerUsername"] = new SelectList(_context.ManagerAccounts.ToList(), "Username", "Username", project.ProjectManagerUsername);
             return View(project);
         }
 

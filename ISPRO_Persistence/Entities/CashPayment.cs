@@ -14,7 +14,7 @@ namespace ISPRO.Persistence.Entities
         public string UserAccountName { get; set; }
 
         [Required]
-        public UserAccount? UserAccount { get; set; }
+        public UserAccount UserAccount { get; set; }
 
         [Required]
         [Display(Name = "Payment Date")]

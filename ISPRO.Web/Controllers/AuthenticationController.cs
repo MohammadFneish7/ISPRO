@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using ISPRO.Web.Models;
+using ISPRO.Web.Authorization;
 
 namespace ISPRO.Web.Controllers
 {
@@ -31,11 +32,72 @@ namespace ISPRO.Web.Controllers
             return View();
         }
 
+        [AuthorizeUserLevel(UserLevelAuth.AUTHENTICATED)]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
         public IActionResult Denied()
         {
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword([Bind("Password, ConfirmPassword")] ChangePasswordRequest changePasswordRequest)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    if(string.IsNullOrWhiteSpace(changePasswordRequest.Password) || string.IsNullOrWhiteSpace(changePasswordRequest.ConfirmPassword))
+                        throw new ModelException("Passowrd shouldn't be empty.");
+
+                    if (!changePasswordRequest.Password.Equals(changePasswordRequest.ConfirmPassword))
+                        throw new ModelException("Passowrd doesn't matchs.");
+
+                    AbstractUser? user;
+
+                    if (User.Identity.Name.Trim().EndsWith("@admins.com", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        user = _context.AdminAccounts.FirstOrDefault(u => u.Username.ToLower() == User.Identity.Name.Trim().ToLower());
+                    }
+                    else if (User.Identity.Name.Trim().EndsWith("@managers.com", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        user = _context.ManagerAccounts.FirstOrDefault(u => u.Username.ToLower() == User.Identity.Name.Trim().ToLower());
+                    }
+                    else
+                    {
+                        user = _context.UserAccounts.FirstOrDefault(u => u.Username.ToLower() == User.Identity.Name.Trim().ToLower());
+                    }
+
+                    if (user != null)
+                    {
+                        if (user.IsExpired)
+                            throw new ModelException("User expired!! Please contact your administrator to reactivate your user account.");
+
+                        if (!user.Active)
+                            throw new ModelException("User deavtivated!! Please contact your administrator to reactivate your user account.");
+
+                        user.Password = CryptoHelper.ComputeSHA256Hash(changePasswordRequest.Password);
+                        await _context.SaveChangesAsync();
+
+                        return Redirect("/Home");
+                    }
+
+                    throw new ModelException("Invalid Username or Password.");
+                }
+            }
+            catch (ModelException ex)
+            {
+                ModelState.AddModelError("ModelError", ex.Message);
+            }
+
+            return View(changePasswordRequest);
+        }
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([Bind("Username,Password")] LoginRequest loginRequest)
@@ -62,10 +124,10 @@ namespace ISPRO.Web.Controllers
                     if(user != null)
                     {
                         if(user.IsExpired)
-                            throw new ModelException("User expired!! Please contact your administrator to reactivate your user account.");
+                            throw new ModelException("User expired! Please contact your administrator to reactivate your user account.");
 
                         if (!user.Active)
-                            throw new ModelException("User deavtivated!! Please contact your administrator to reactivate your user account.");
+                            throw new ModelException("User deactivated! Please contact your administrator to reactivate your user account.");
 
                         var claims = new List<Claim>
                         { 
@@ -103,7 +165,8 @@ namespace ISPRO.Web.Controllers
             return View(loginRequest);
         }
 
-        
+
+        [AuthorizeUserLevel(UserLevelAuth.AUTHENTICATED)]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

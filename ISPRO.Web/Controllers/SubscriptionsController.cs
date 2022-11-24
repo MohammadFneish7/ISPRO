@@ -11,6 +11,8 @@ using ISPRO.Helpers.Exceptions;
 using ISPRO.Helpers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ISPRO.Web.Authorization;
+using System.Linq.Expressions;
+using ISPRO.Persistence.Enums;
 
 namespace ISPRO.Web.Controllers
 {
@@ -18,6 +20,7 @@ namespace ISPRO.Web.Controllers
     public class SubscriptionsController : Controller
     {
         private readonly DataContext _context;
+        private Expression<Func<Subscription, bool>> expression;
 
         public SubscriptionsController(DataContext context)
         {
@@ -27,7 +30,11 @@ namespace ISPRO.Web.Controllers
         // GET: Subscriptions
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Subscriptions.Include(p => p.Project);
+            if (!User.IsInRole(UserType.ADMIN.ToString()))
+                expression = x => x.Project.ProjectManager.Username == User.Identity.Name;
+            else
+                expression = x => true == true;
+            var dataContext = _context.Subscriptions.Include(p => p.Project).Where(expression);
             return View(await dataContext.ToListAsync());
         }
 
@@ -53,7 +60,7 @@ namespace ISPRO.Web.Controllers
         // GET: Subscriptions/Create
         public IActionResult Create()
         {
-            ViewData["ProjectName"] = new SelectList(_context.Projects, "Name", "Name");
+            ViewData["ProjectName"] = new SelectList(_context.Projects.ToList(), "Name", "Name");
             return View();
         }
 
@@ -91,7 +98,7 @@ namespace ISPRO.Web.Controllers
                 ModelState.AddModelError("ModelError", ex.Message);
             }
 
-            ViewData["ProjectName"] = new SelectList(_context.Projects, "Name", "Name", subscription.ProjectName);
+            ViewData["ProjectName"] = new SelectList(_context.Projects.ToList(), "Name", "Name", subscription.ProjectName);
             return View(subscription);
         }
 
@@ -108,7 +115,7 @@ namespace ISPRO.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProjectName"] = new SelectList(_context.Projects, "Name", "Name", subscription.ProjectName);
+            ViewData["ProjectName"] = new SelectList(_context.Projects.ToList(), "Name", "Name", subscription.ProjectName);
             return View(subscription);
         }
 
@@ -165,7 +172,7 @@ namespace ISPRO.Web.Controllers
                     }
                 }
             }
-            ViewData["ProjectName"] = new SelectList(_context.Projects, "Name", "Name", subscription.ProjectName);
+            ViewData["ProjectName"] = new SelectList(_context.Projects.ToList(), "Name", "Name", subscription.ProjectName);
             return View(subscription);
         }
 

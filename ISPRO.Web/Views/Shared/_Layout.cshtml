@@ -61,6 +61,12 @@
                                     </li>
                             }
 
+                            if ((AuthorizationService.AuthorizeAsync(User, UserLevelAuth.AUTHENTICATED.ToString())).Result.Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Recharge" asp-action="Recharge"><i class="bi bi-upc-scan"></i>Recharge</a>
+                                </li>
+                            }
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-check"></i>Privacy</a>
                                 </li>
@@ -73,9 +79,14 @@
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <i class="bi bi-person-fill"></i>@User.Identity.Name </a>
                                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                            @if (!(AuthorizationService.AuthorizeAsync(User, UserLevelAuth.SUPERUSER.ToString())).Result.Succeeded){
-                                            <li><a class="dropdown-item" asp-action="Details" asp-controller="UserAccounts" asp-route-id="@User.Identity.Name"><i class="bi bi-person-badge"></i>Profile</a></li>
+                                            @if (!(AuthorizationService.AuthorizeAsync(User, UserLevelAuth.ADMIN.ToString())).Result.Succeeded){
+                                                if ((AuthorizationService.AuthorizeAsync(User, UserLevelAuth.SUPERUSER.ToString())).Result.Succeeded){
+                                                <li><a class="dropdown-item" asp-action="Profile" asp-controller="ManagerAccounts" asp-route-id="@User.Identity.Name"><i class="bi bi-person-badge"></i>Profile</a></li>
+                                                }else{
+                                                    <li><a class="dropdown-item" asp-action="Profile" asp-controller="UserAccounts" asp-route-id="@User.Identity.Name"><i class="bi bi-person-badge"></i>Profile</a></li>
+                                                }
                                             }
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="Authentication" asp-action="ChangePassword"><i class="bi bi-key"></i>Change Password</a></li>
                                             <li><a class="dropdown-item" asp-area="" asp-controller="Authentication" asp-action="Logout"><i class="bi bi-box-arrow-left"></i>Logout</a></li>
                                         </ul>
                                     </li>
@@ -118,6 +129,8 @@
     <script src="~/lib/datatables/Buttons-2.2.3/js/buttons.colVis.min.js"></script>
 
     <script>
+        IndexTable = null;
+
         function fade(element) {
             var op = 1;  // initial opacity
             var timer = setInterval(function () {
@@ -191,7 +204,7 @@
                     }
                 });
 
-                $('.table').DataTable({
+                IndexTable = $('.table:not(.table-striped)').DataTable({
                     scrollX: true,
                     fixedHeader: true,
                     dom: 'QBlfrtip', //Qfrtip

@@ -5,22 +5,31 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Styles{
+    <style>
+        th {
+            font-weight: bold !important;
+            text-align: center !important;
+        }
+    </style>
+}
+
 <h1>Details</h1>
 
 <div>
     <h4>@Model.Username</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UserType)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.UserType)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DisplayName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.DisplayName)
         </dd>
         <dt class="col-sm-2">
@@ -35,22 +44,22 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Subscription.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Password)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Password)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Mobile)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Mobile)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Email)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Email)
         </dd>
         <dt class="col-sm-2">
@@ -59,16 +68,16 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CreationDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.LastUpdate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.LastUpdate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ExpiryDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ExpiryDate)
         </dd>
         <dt class="col-sm-2">
@@ -77,10 +86,10 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ValidityDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IsExpired)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsExpired)
         </dd>
         <dt class="col-sm-2">
@@ -89,13 +98,69 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsValid)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Active)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Active)
         </dd>
     </dl>
+    </br>
+    <h4>Cash Payments</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Ammount</th>
+                <th>Recharge Period</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CashPayments)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PaymentDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Ammount) @Html.DisplayFor(modelItem => item.Currency)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RechargePeriod)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    </br>
+    </br>
+    <h4>PrePaid Cards</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Ammount</th>
+                <th>Recharge Period</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.PrePaidCards)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ConsumptionDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price) @Html.DisplayFor(modelItem => item.Currency)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RechargePeriod)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Username" class="btn btn-primary">Edit</a> |

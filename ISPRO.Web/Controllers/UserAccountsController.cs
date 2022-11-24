@@ -11,6 +11,8 @@ using ISPRO.Helpers.Exceptions;
 using ISPRO.Helpers;
 using System.Text.RegularExpressions;
 using ISPRO.Web.Authorization;
+using System.Linq.Expressions;
+using ISPRO.Persistence.Enums;
 
 namespace ISPRO.Web.Controllers
 {
@@ -18,6 +20,7 @@ namespace ISPRO.Web.Controllers
     public class UserAccountsController : Controller
     {
         private readonly DataContext _context;
+        private Expression<Func<UserAccount, bool>> expression;
 
         public UserAccountsController(DataContext context)
         {
@@ -27,13 +30,35 @@ namespace ISPRO.Web.Controllers
         // GET: UserAccounts
         public async Task<IActionResult> Index()
         {
-              return _context.UserAccounts != null ? 
-                          View(await _context.UserAccounts.Include(u => u.Project).Include(u => u.Subscription).ToListAsync()) :
+            if (!User.IsInRole(UserType.ADMIN.ToString()))
+                expression = x => x.Project.ProjectManager.Username == User.Identity.Name;
+            else
+                expression = x => true == true;
+            return _context.UserAccounts != null ? 
+                          View(await _context.UserAccounts.Include(u => u.Project).Include(u => u.Subscription).Where(expression).ToListAsync()) :
                           Problem("Entity set 'DataContext.UserAccounts'  is null.");
         }
 
         // GET: UserAccounts/Details/5
         public async Task<IActionResult> Details(string id)
+        {
+            if (id == null || _context.UserAccounts == null)
+            {
+                return NotFound();
+            }
+
+            var userAccount = await _context.UserAccounts.Include(u => u.Project).Include(u => u.Subscription).Include(u=>u.CashPayments).Include(u => u.PrePaidCards)
+                .FirstOrDefaultAsync(m => m.Username == id);
+            if (userAccount == null)
+            {
+                return NotFound();
+            }
+
+            return View(userAccount);
+        }
+
+        [AuthorizeUserLevel(UserLevelAuth.AUTHENTICATED)]
+        public async Task<IActionResult> Profile(string id)
         {
             if (id == null || _context.UserAccounts == null)
             {
@@ -53,8 +78,8 @@ namespace ISPRO.Web.Controllers
         // GET: UserAccounts/Create
         public IActionResult Create()
         {
-            ViewData["ProjectName"] = new SelectList(_context.Projects, "Name", "Name");
-            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions, "Id", "Name");
+            ViewData["ProjectName"] = new SelectList(_context.Projects.ToList(), "Name", "Name");
+            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions.ToList(), "Id", "Name");
             return View();
         }
 
@@ -103,8 +128,8 @@ namespace ISPRO.Web.Controllers
                 ModelState.AddModelError("ModelError", ex.Message);
             }
 
-            ViewData["ProjectName"] = new SelectList(_context.Projects, "Name", "Name", userAccount.ProjectName);
-            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions, "Id", "Name", userAccount.SubscriptionId);
+            ViewData["ProjectName"] = new SelectList(_context.Projects.ToList(), "Name", "Name", userAccount.ProjectName);
+            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions.ToList(), "Id", "Name", userAccount.SubscriptionId);
             return View(userAccount);
         }
 
@@ -121,8 +146,8 @@ namespace ISPRO.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProjectName"] = new SelectList(_context.Projects, "Name", "Name", userAccount.ProjectName);
-            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions, "Id", "Name", userAccount.SubscriptionId);
+            ViewData["ProjectName"] = new SelectList(_context.Projects.ToList(), "Name", "Name", userAccount.ProjectName);
+            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions.ToList(), "Id", "Name", userAccount.SubscriptionId);
             return View(userAccount);
         }
 
@@ -178,8 +203,8 @@ namespace ISPRO.Web.Controllers
                 }
             }
 
-            ViewData["ProjectName"] = new SelectList(_context.Projects, "Name", "Name", userAccount.ProjectName);
-            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions, "Id", "Name", userAccount.SubscriptionId);
+            ViewData["ProjectName"] = new SelectList(_context.Projects.ToList(), "Name", "Name", userAccount.ProjectName);
+            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions.ToList(), "Id", "Name", userAccount.SubscriptionId);
             return View(userAccount);
         }
 

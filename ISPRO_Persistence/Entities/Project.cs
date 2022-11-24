@@ -19,6 +19,7 @@ namespace ISPRO.Persistence.Entities
         public string? Description { get; set; }
 
         [ForeignKey("ProjectManager")]
+        [Display(Name = "Project Manager")]
         public string ProjectManagerUsername { get; set; }
 
         [Required]

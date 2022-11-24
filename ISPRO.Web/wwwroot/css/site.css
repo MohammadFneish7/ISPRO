@@ -210,3 +210,11 @@ div.dt-buttons {
 .text-bg-success {
     background-color: #80c769;
 }
+
+
+a[disabled] {
+    color: currentColor;
+    pointer-events: none;
+    opacity: 0.5;
+    text-decoration: none;
+}

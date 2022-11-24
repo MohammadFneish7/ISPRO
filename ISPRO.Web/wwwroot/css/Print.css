@@ -1,0 +1,15 @@
+﻿@media print {
+
+    body{
+        padding: 11px;
+    }
+
+    body > .container, header, footer{
+        display: none;
+    }
+
+    .print-div {
+        position: relative !important;
+        left: 0px !important;
+    }
+}

@@ -5,65 +5,82 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Styles{
+    <link rel="stylesheet" href="~/css/Print.css" asp-append-version="true" />
+}
 <h1 style="margin-top:30px;"><i class="bi bi-credit-card-2-front"></i> PrePaid Cards</h1>
 <hr style="margin-bottom:50px;" />
 
 <p>
+    <a onclick="printCards()" class="btn btn-primary" style="float: right; margin-bottom:10px;margin-left:10px;"><i class="bi bi-printer"></i>Print Cards</a>
     <a asp-action="Generate" class="btn btn-primary" style="float: right; margin-bottom:10px;margin-left:10px;"><i class="bi bi-braces"></i>Generate Cards</a>
     <a asp-action="Create" class="btn btn-primary" style="float: right; margin-bottom:10px;"><i class="bi bi-plus-lg"></i>Create New</a>
 </p>
 <table class="table display compact">
     <thead>
         <tr>
-            <th>Actions</th>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Subscription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RechargePeriod)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Currency)
-            </th>
-            <th class="type-date">
-                @Html.DisplayNameFor(model => model.ExpiryDate)
-            </th>
-            <th class="type-bool" reversed-bool="true" true-verb="Expired" false-verb="Alive">
-                @Html.DisplayNameFor(model => model.IsExpired)
-            </th>
-            <th class="type-bool" reversed-bool="false" true-verb="True" false-verb="False">
-                @Html.DisplayNameFor(model => model.IsConsumed)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ConsumerName)
-            </th>
-            <th class="type-date">
-                @Html.DisplayNameFor(model => model.ConsumptionDate)
-            </th>
-            <th class="type-date">
-                @Html.DisplayNameFor(model => model.CreationDate)
-            </th>
-            <th class="type-date">
-                @Html.DisplayNameFor(model => model.LastUpdate)
-            </th>
+                <th>Actions</th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Subscription.ProjectName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Subscription)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RechargePeriod)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Currency)
+                </th>
+                <th class="type-date">
+                    @Html.DisplayNameFor(model => model.ExpiryDate)
+                </th>
+                <th class="type-bool" reversed-bool="true" true-verb="Expired" false-verb="Alive">
+                    @Html.DisplayNameFor(model => model.IsExpired)
+                </th>
+                <th class="type-bool" reversed-bool="false" true-verb="True" false-verb="False">
+                    @Html.DisplayNameFor(model => model.IsConsumed)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ConsumerName)
+                </th>
+                <th class="type-date">
+                    @Html.DisplayNameFor(model => model.ConsumptionDate)
+                </th>
+                <th class="type-date">
+                    @Html.DisplayNameFor(model => model.CreationDate)
+                </th>
+                <th class="type-date">
+                    @Html.DisplayNameFor(model => model.LastUpdate)
+                </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
-                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash" style="color:red; margin-left:10px"></i></a>
-                </td>
+                @if(item.IsConsumed){
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" disabled><i class="bi bi-pencil-square"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" disabled><i class="bi bi-trash" style="color:red; margin-left:10px"></i></a>
+                    </td>
+                }else{
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash" style="color:red; margin-left:10px"></i></a>
+                    </td>
+                }
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">@item.Id</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subscription.ProjectName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Subscription.Name)
@@ -102,3 +119,11 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+
+    <script>
+
+
+    </script>
+}

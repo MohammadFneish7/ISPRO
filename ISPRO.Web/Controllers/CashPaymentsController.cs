@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Authorization;
 using ISPRO.Web.Authorization;
 using ISPRO.Persistence.Enums;
+using System.Linq.Expressions;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace ISPRO.Web.Controllers
 {
@@ -20,6 +22,7 @@ namespace ISPRO.Web.Controllers
     public class CashPaymentsController : Controller
     {
         private readonly DataContext _context;
+        private Expression<Func<CashPayment, bool>> expression;
 
         public CashPaymentsController(DataContext context)
         {
@@ -29,6 +32,10 @@ namespace ISPRO.Web.Controllers
         // GET: CashPayments
         public async Task<IActionResult> Index()
         {
+            if (!User.IsInRole(UserType.ADMIN.ToString()))
+                expression = x => x.UserAccount.Project.ProjectManager.Username == User.Identity.Name;
+            else
+                expression = x => true == true;
             var dataContext = _context.CashPayments.Include(p => p.UserAccount);
             return View(await dataContext.ToListAsync());
         }
@@ -55,7 +62,7 @@ namespace ISPRO.Web.Controllers
         // GET: CashPayments/Create
         public IActionResult Create()
         {
-            ViewData["UserAccountName"] = new SelectList(_context.UserAccounts, "Username", "Username");
+            ViewData["UserAccountName"] = new SelectList(_context.UserAccounts.ToList(), "Username", "Username");
             return View();
         }
 
@@ -70,11 +77,28 @@ namespace ISPRO.Web.Controllers
             {
                 if(new ControllerHelper().ValidateModelStateParentFieldByStrField(ModelState, "UserAccount", "UserAccountName", cashPayment.UserAccountName))
                 {
-                    cashPayment.UserAccount = await _context.UserAccounts.Where(x => x.Username == cashPayment.UserAccountName).FirstAsync();
+                    var user = await _context.UserAccounts.Where(x => x.Username == cashPayment.UserAccountName).FirstAsync();
+                    
+                    if (user == null)
+                        throw new ModelException("Invalid user selected");
+
+                    if (!user.Active)
+                        throw new ModelException("Operation denied. User is in-active!");
+
+                    if (user.IsExpired)
+                        throw new ModelException("Operation denied. User has expired!");
+
+                    cashPayment.UserAccount = user;
+
                 }
 
                 if (ModelState.IsValid)
                 {
+                    if (cashPayment.UserAccount.IsValid)
+                        cashPayment.UserAccount.ValidityDate = (cashPayment.UserAccount.ValidityDate != null ? cashPayment.UserAccount.ValidityDate.Value : DateTime.Now).AddDays(cashPayment.RechargePeriod);
+                    else
+                        cashPayment.UserAccount.ValidityDate = DateTime.Now.AddDays(cashPayment.RechargePeriod);
+
                     _context.Add(cashPayment);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -85,75 +109,7 @@ namespace ISPRO.Web.Controllers
                 ModelState.AddModelError("ModelError", ex.Message);
             }
 
-            ViewData["UserAccountName"] = new SelectList(_context.UserAccounts, "Username", "Username", cashPayment.UserAccountName);
-            return View(cashPayment);
-        }
-
-        // GET: CashPayments/Edit/5
-        public async Task<IActionResult> Edit(int id)
-        {
-            if (id == null || _context.CashPayments == null)
-            {
-                return NotFound();
-            }
-
-            var cashPayment = await _context.CashPayments.FindAsync(id);
-            if (cashPayment == null)
-            {
-                return NotFound();
-            }
-            ViewData["UserAccountName"] = new SelectList(_context.UserAccounts, "Username", "Username", cashPayment.UserAccountName);
-            return View(cashPayment);
-        }
-
-        // POST: CashPayments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserAccountName,PaymentDate,RechargePeriod,Ammount,Currency,CreationDate,LastUpdate")] CashPayment cashPayment)
-        {
-            if (id != cashPayment.Id)
-            {
-                return NotFound();
-            }
-
-            new ReflectionHelper().CopyNullFromOld(await _context.CashPayments.FindAsync(id), cashPayment);
-            ModelState.Clear();
-            TryValidateModel(cashPayment);
-
-            if (new ControllerHelper().ValidateModelStateParentFieldByStrField(ModelState, "UserAccount", "UserAccountName", cashPayment.UserAccountName))
-            {
-                cashPayment.UserAccount = await _context.UserAccounts.Where(x => x.Username == cashPayment.UserAccountName).FirstAsync();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Entry(_context.CashPayments.Where(x => x.Id.Equals(id)).FirstOrDefault()).State = EntityState.Detached;
-                    _context.Update(cashPayment);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CashPaymentExists(cashPayment.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                catch (ModelException ex)
-                {
-                    ModelState.AddModelError("ModelError", ex.Message);
-                }
-                
-            }
-            ViewData["UserAccountName"] = new SelectList(_context.UserAccounts, "Username", "Username", cashPayment.UserAccountName);
+            ViewData["UserAccountName"] = new SelectList(_context.UserAccounts.ToList(), "Username", "Username", cashPayment.UserAccountName);
             return View(cashPayment);
         }
 

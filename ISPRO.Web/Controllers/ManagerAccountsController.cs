@@ -50,6 +50,24 @@ namespace ISPRO.Web.Controllers
             return View(managerAccount);
         }
 
+        [AuthorizeUserLevel(UserLevelAuth.SUPERUSER)]
+        public async Task<IActionResult> Profile(string id)
+        {
+            if (id == null || _context.ManagerAccounts == null)
+            {
+                return NotFound();
+            }
+
+            var managerAccount = await _context.ManagerAccounts
+                .FirstOrDefaultAsync(m => m.Username == id);
+            if (managerAccount == null)
+            {
+                return NotFound();
+            }
+
+            return View(managerAccount);
+        }
+
         // GET: ManagerAccounts/Create
         public IActionResult Create()
         {

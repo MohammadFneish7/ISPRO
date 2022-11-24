@@ -52,7 +52,7 @@ namespace ISPRO.Persistence.Entities
 
         [NotMapped]
         [Display(Name = "Is Consumed")]
-        public bool IsConsumed => Consumer != null;
+        public bool IsConsumed => (Consumer != null || ConsumerName!=null);
 
         [Required]
         public Currency Currency { get; set; } = Currency.USD;

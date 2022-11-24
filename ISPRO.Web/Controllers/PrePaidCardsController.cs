@@ -12,6 +12,8 @@ using ISPRO.Helpers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ISPRO.Web.Models;
 using ISPRO.Web.Authorization;
+using System.Linq.Expressions;
+using ISPRO.Persistence.Enums;
 
 namespace ISPRO.Web.Controllers
 {
@@ -19,6 +21,7 @@ namespace ISPRO.Web.Controllers
     public class PrePaidCardsController : Controller
     {
         private readonly DataContext _context;
+        private Expression<Func<PrePaidCard, bool>> expression;
 
         public PrePaidCardsController(DataContext context)
         {
@@ -28,7 +31,11 @@ namespace ISPRO.Web.Controllers
         // GET: PrePaidCards
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.PrePaidCards.Include(p => p.Consumer).Include(p => p.Subscription);
+            if (!User.IsInRole(UserType.ADMIN.ToString()))
+                expression = x => x.Subscription.Project.ProjectManager.Username == User.Identity.Name;
+            else
+                expression = x => true == true;
+            var dataContext = _context.PrePaidCards.Include(p => p.Consumer).Include(p => p.Subscription).Include(p => p.Subscription.Project).Where(expression);
             return View(await dataContext.ToListAsync());
         }
 
@@ -54,8 +61,8 @@ namespace ISPRO.Web.Controllers
         // GET: PrePaidCards/Create
         public IActionResult Create()
         {
-            ViewData["ConsumerName"] = new SelectList(_context.UserAccounts, "Username", "Username");
-            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions, "Id", "Name");
+            ViewData["ConsumerName"] = new SelectList(_context.UserAccounts.ToList(), "Username", "Username");
+            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions.ToList(), "Id", "Name");
             ViewData["GeneratedId"] = PrePaidCard.GenerateId();
             return View();
         }
@@ -86,15 +93,15 @@ namespace ISPRO.Web.Controllers
                 ModelState.AddModelError("ModelError", ex.Message);
             }
 
-            ViewData["ConsumerName"] = new SelectList(_context.UserAccounts, "Username", "Username", prePaidCard.ConsumerName);
-            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions, "Id", "Name", prePaidCard.SubscriptionId);
+            ViewData["ConsumerName"] = new SelectList(_context.UserAccounts.ToList(), "Username", "Username", prePaidCard.ConsumerName);
+            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions.ToList(), "Id", "Name", prePaidCard.SubscriptionId);
             return View(prePaidCard);
         }
 
         // GET: PrePaidCards/Generate
         public IActionResult Generate()
         {
-            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions, "Id", "Name");
+            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions.ToList(), "Id", "Name");
             return View();
         }
 
@@ -135,7 +142,7 @@ namespace ISPRO.Web.Controllers
                 ModelState.AddModelError("ModelError", ex.Message);
             }
 
-            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions, "Id", "Name", prepaidCardsGenerationRequest.SubscriptionId);
+            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions.ToList(), "Id", "Name", prepaidCardsGenerationRequest.SubscriptionId);
             return View(prepaidCardsGenerationRequest);
         }
 
@@ -152,8 +159,12 @@ namespace ISPRO.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["ConsumerName"] = new SelectList(_context.UserAccounts, "Username", "Username", prePaidCard.ConsumerName);
-            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions, "Id", "Name", prePaidCard.SubscriptionId);
+
+            if (prePaidCard.IsConsumed)
+                return RedirectToAction(nameof(Details), new { id = id });
+
+            ViewData["ConsumerName"] = new SelectList(_context.UserAccounts.ToList(), "Username", "Username", prePaidCard.ConsumerName);
+            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions.ToList(), "Id", "Name", prePaidCard.SubscriptionId);
             return View(prePaidCard);
         }
 
@@ -168,6 +179,10 @@ namespace ISPRO.Web.Controllers
             {
                 return NotFound();
             }
+
+
+            if (prePaidCard.IsConsumed)
+                return RedirectToAction(nameof(Details), new { id = id });
 
             new ReflectionHelper().CopyNullFromOld(await _context.PrePaidCards.FindAsync(id), prePaidCard);
             ModelState.Clear();
@@ -204,8 +219,8 @@ namespace ISPRO.Web.Controllers
                 }
                 
             }
-            ViewData["ConsumerName"] = new SelectList(_context.UserAccounts, "Username", "Username", prePaidCard.ConsumerName);
-            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions, "Id", "Name", prePaidCard.SubscriptionId);
+            ViewData["ConsumerName"] = new SelectList(_context.UserAccounts.ToList(), "Username", "Username", prePaidCard.ConsumerName);
+            ViewData["SubscriptionId"] = new SelectList(_context.Subscriptions.ToList(), "Id", "Name", prePaidCard.SubscriptionId);
             return View(prePaidCard);
         }
 
@@ -225,6 +240,10 @@ namespace ISPRO.Web.Controllers
                 return NotFound();
             }
 
+
+            if (prePaidCard.IsConsumed)
+                return RedirectToAction(nameof(Details), new { id = id });
+
             return View(prePaidCard);
         }
 
@@ -240,6 +259,10 @@ namespace ISPRO.Web.Controllers
             var prePaidCard = await _context.PrePaidCards.FindAsync(id);
             if (prePaidCard != null)
             {
+
+                if (prePaidCard.IsConsumed)
+                    return RedirectToAction(nameof(Details), new { id = id });
+
                 _context.PrePaidCards.Remove(prePaidCard);
             }
             
