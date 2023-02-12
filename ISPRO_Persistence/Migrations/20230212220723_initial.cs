@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ISPRO.Persistence.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,16 +13,16 @@ namespace ISPRO.Persistence.Migrations
                 name: "AdminAccounts",
                 columns: table => new
                 {
-                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    UserType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    Mobile = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Active = table.Column<bool>(type: "bit", nullable: false)
+                    Username = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    UserType = table.Column<string>(type: "TEXT", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastUpdate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Password = table.Column<string>(type: "TEXT", maxLength: 150, nullable: true),
+                    Mobile = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    ExpiryDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Active = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,17 +33,17 @@ namespace ISPRO.Persistence.Migrations
                 name: "ManagerAccounts",
                 columns: table => new
                 {
-                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    UserType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MaxAllowedProjects = table.Column<int>(type: "int", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    Mobile = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Active = table.Column<bool>(type: "bit", nullable: false)
+                    Username = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    UserType = table.Column<string>(type: "TEXT", nullable: false),
+                    MaxAllowedProjects = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastUpdate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Password = table.Column<string>(type: "TEXT", maxLength: 150, nullable: true),
+                    Mobile = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    ExpiryDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Active = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,11 +54,11 @@ namespace ISPRO.Persistence.Migrations
                 name: "Projects",
                 columns: table => new
                 {
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    ProjectManagerUsername = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 150, nullable: true),
+                    ProjectManagerUsername = table.Column<string>(type: "TEXT", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastUpdate = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -75,14 +75,14 @@ namespace ISPRO.Persistence.Migrations
                 name: "Subscriptions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Bandwidth = table.Column<int>(type: "int", nullable: false),
-                    Quota = table.Column<int>(type: "int", nullable: false),
-                    ProjectName = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false),
+                    Bandwidth = table.Column<int>(type: "INTEGER", nullable: false),
+                    Quota = table.Column<int>(type: "INTEGER", nullable: false),
+                    ProjectName = table.Column<string>(type: "TEXT", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastUpdate = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,19 +99,19 @@ namespace ISPRO.Persistence.Migrations
                 name: "UserAccounts",
                 columns: table => new
                 {
-                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ProjectName = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    SubscriptionId = table.Column<int>(type: "int", nullable: false),
-                    UserType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ValidityDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    Mobile = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Active = table.Column<bool>(type: "bit", nullable: false)
+                    Username = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    ProjectName = table.Column<string>(type: "TEXT", nullable: false),
+                    SubscriptionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserType = table.Column<string>(type: "TEXT", nullable: false),
+                    ValidityDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastUpdate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Password = table.Column<string>(type: "TEXT", maxLength: 150, nullable: true),
+                    Mobile = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    ExpiryDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Active = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,15 +133,15 @@ namespace ISPRO.Persistence.Migrations
                 name: "CashPayments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserAccountName = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RechargePeriod = table.Column<int>(type: "int", nullable: false),
-                    Ammount = table.Column<double>(type: "float", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserAccountName = table.Column<string>(type: "TEXT", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    RechargePeriod = table.Column<int>(type: "INTEGER", nullable: false),
+                    Ammount = table.Column<double>(type: "REAL", nullable: false),
+                    Currency = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastUpdate = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -158,16 +158,16 @@ namespace ISPRO.Persistence.Migrations
                 name: "PrePaidCards",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    SubscriptionId = table.Column<int>(type: "int", nullable: false),
-                    ConsumerName = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ConsumptionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RechargePeriod = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastUpdate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    SubscriptionId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ConsumerName = table.Column<string>(type: "TEXT", nullable: true),
+                    ExpiryDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ConsumptionDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    RechargePeriod = table.Column<int>(type: "INTEGER", nullable: false),
+                    Price = table.Column<double>(type: "REAL", nullable: false),
+                    Currency = table.Column<string>(type: "TEXT", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastUpdate = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

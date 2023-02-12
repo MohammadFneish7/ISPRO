@@ -3,7 +3,6 @@ using System;
 using ISPRO.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -12,56 +11,52 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ISPRO.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221028021030_Initial")]
-    partial class Initial
+    [Migration("20230212220723_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.10")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.10");
 
             modelBuilder.Entity("ISPRO.Persistence.Entities.AdminAccount", b =>
                 {
                     b.Property<string>("Username")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Active")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DisplayName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("ExpiryDate")
                         .IsRequired()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastUpdate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Mobile")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UserType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Username");
 
@@ -72,31 +67,29 @@ namespace ISPRO.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<double>("Ammount")
-                        .HasColumnType("float");
+                        .HasColumnType("REAL");
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Currency")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("LastUpdate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("RechargePeriod")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserAccountName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -109,43 +102,43 @@ namespace ISPRO.Persistence.Migrations
                 {
                     b.Property<string>("Username")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Active")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DisplayName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("ExpiryDate")
                         .IsRequired()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastUpdate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("MaxAllowedProjects")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Mobile")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("UserType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Username");
 
@@ -155,36 +148,36 @@ namespace ISPRO.Persistence.Migrations
             modelBuilder.Entity("ISPRO.Persistence.Entities.PrePaidCard", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ConsumerName")
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("ConsumptionDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Currency")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("ExpiryDate")
                         .IsRequired()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastUpdate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<double>("Price")
-                        .HasColumnType("float");
+                        .HasColumnType("REAL");
 
                     b.Property<int>("RechargePeriod")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("SubscriptionId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -199,21 +192,21 @@ namespace ISPRO.Persistence.Migrations
                 {
                     b.Property<string>("Name")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastUpdate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ProjectManagerUsername")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Name");
 
@@ -226,30 +219,28 @@ namespace ISPRO.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Bandwidth")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastUpdate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ProjectName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Quota")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -262,51 +253,51 @@ namespace ISPRO.Persistence.Migrations
                 {
                     b.Property<string>("Username")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Active")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("DisplayName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("ExpiryDate")
                         .IsRequired()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastUpdate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Mobile")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ProjectName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("SubscriptionId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("ValidityDate")
                         .IsRequired()
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Username");
 

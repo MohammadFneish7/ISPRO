@@ -24,21 +24,30 @@ namespace ISPRO.Persistence.Context
         public DbSet<PrePaidCard> PrePaidCards { get; set; }
         public DbSet<CashPayment> CashPayments { get; set; }
 
+        private static string codebase = Directory.GetParent(Assembly.GetExecutingAssembly().FullName).FullName;
+        private string dbpath = Path.Combine(codebase, "data\\datastore.db");
+
         public DataContext() : base()
         {
+            Directory.CreateDirectory(Path.Combine(codebase, "data"));
+            //if (!File.Exists(dbpath))
+            //    File.Create(dbpath);
+
+            base.Database.EnsureCreated();
             EnsureBaseConfigExist();
-            //base.Database.EnsureCreated();
         }
 
-        public DataContext(DbContextOptions options) : base(options)
-        {
-            EnsureBaseConfigExist();
-            //base.Database.EnsureCreated();
-        }
+        //public DataContext(DbContextOptions options) : base(options)
+        //{
+        //    EnsureBaseConfigExist();
+        //    base.Database.EnsureCreated();
+        //}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //optionsBuilder.UseSqlServer("Server=tcp:ispro-dbserver.database.windows.net,1433;Initial Catalog=ISPRO-DB;Persist Security Info=False;User ID=superuser;Password=Warning@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            //optionsBuilder.UseSqlite("Data Source=.\\ispro.db;");
+            optionsBuilder.UseSqlite($"Data Source='{dbpath}'");
             base.OnConfiguring(optionsBuilder);
         }
 
