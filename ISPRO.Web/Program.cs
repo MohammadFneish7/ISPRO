@@ -13,9 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 //builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddSingleton(new DataContext());
-
-builder.Services.AddControllersWithViews();
 
 builder.Services.AddSession(options =>
 {
@@ -43,6 +40,10 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthorizationHandler, UserLevelRequirementHandler>();
+
+builder.Services.AddSingleton(new DataContext());
+
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 

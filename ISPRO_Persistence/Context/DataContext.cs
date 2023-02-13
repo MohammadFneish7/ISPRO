@@ -25,28 +25,24 @@ namespace ISPRO.Persistence.Context
         public DbSet<CashPayment> CashPayments { get; set; }
 
         private static string codebase = Directory.GetParent(Assembly.GetExecutingAssembly().FullName).FullName;
-        private string dbpath = Path.Combine(codebase, "data\\datastore.db");
+        private string dbpath = Path.Combine(codebase, "datastore/ispro.db");
 
         public DataContext() : base()
         {
-            Directory.CreateDirectory(Path.Combine(codebase, "data"));
-            //if (!File.Exists(dbpath))
-            //    File.Create(dbpath);
-
-            base.Database.EnsureCreated();
+            Directory.CreateDirectory(Path.Combine(codebase, "datastore"));
+            try
+            {
+                base.Database.Migrate();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+            }
             EnsureBaseConfigExist();
         }
 
-        //public DataContext(DbContextOptions options) : base(options)
-        //{
-        //    EnsureBaseConfigExist();
-        //    base.Database.EnsureCreated();
-        //}
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer("Server=tcp:ispro-dbserver.database.windows.net,1433;Initial Catalog=ISPRO-DB;Persist Security Info=False;User ID=superuser;Password=Warning@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
-            //optionsBuilder.UseSqlite("Data Source=.\\ispro.db;");
             optionsBuilder.UseSqlite($"Data Source='{dbpath}'");
             base.OnConfiguring(optionsBuilder);
         }
@@ -75,11 +71,11 @@ namespace ISPRO.Persistence.Context
 
             modelBuilder.Entity<Subscription>().HasMany(s => s.Subscribers).WithOne(u => u.Subscription)
                 .HasForeignKey(u => u.SubscriptionId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Subscription>().HasMany(s => s.PrePaidCards).WithOne(p => p.Subscription)
                 .HasForeignKey(p => p.SubscriptionId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             var CurrencyConverter = new EnumToStringConverter<Currency>();
             var UserTypeConverter = new EnumToStringConverter<UserType>();

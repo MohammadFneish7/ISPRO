@@ -26,8 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="data\" />
     <Folder Include="Objects\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="datastore\ispro.db">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
